@@ -1,41 +1,67 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+/**
+ *
+ * Author: Jason Tse
+ */
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// Load the module dependencies
+const configureMongoose = require('./config/mongoose');
+const configureExpress = require('./config/express');
+const { graphqlHTTP } = require('express-graphql');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const jwt = require("jsonwebtoken");
 
-var app = express();
+const config = require('./config/config');
+// const mergedSchema = require('./schemas/merged.server.schema.js');
+const JWT_SECRET = config.JWT_SECRET; // your secret key
+const jwtExpirySeconds = config.jwtExpirySeconds;
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// Create a new Mongoose connection instance
+const db = configureMongoose();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// Create a new Express application instance
+const app = configureExpress();
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// Configure CORS options
+const corsOptions = {
+  origin: ["http://localhost:3000"],
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+// Add a middleware for checking JWT and making user info available in the context
+app.use((req, res, next) => {
+  const token = req.cookies.token;
+  if (token) {
+    try {
+      const payload = jwt.verify(token, JWT_SECRET);
+      req.user = payload;
+    } catch (e) {
+      // Token is invalid
+    }
+  }
+  next();
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// Configure GraphQL endpoint
+app.use(
+  '/graphql',
+  graphqlHTTP((request, response) => {
+    return {
+      schema: mergedSchema,
+      rootValue: global,
+      graphiql: true,
+      context: {
+        req: request,
+        res: response,
+      },
+    };
+  })
+);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+// Use the Express application instance to listen to the '4000' port
+app.listen(4000, () => console.log('Express GraphQL Server Now Running On http://localhost:4000/graphql'));
 
+// Use the module.exports property to expose our Express application instance for external usage
 module.exports = app;
