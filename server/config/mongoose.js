@@ -1,6 +1,6 @@
 /**
  *
- * Author: Jason Tse
+ * @author: Jason Tse
  *
  */
 const config = require('./config');

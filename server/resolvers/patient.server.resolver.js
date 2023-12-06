@@ -1,8 +1,9 @@
 /**
- * Author: Jason Tse
+ * @author: Jason Tse
  */
 
 const Patient = require('../models/patient.server.model');
+const Vitals = require('../models/vitals.server.model');
 
 const getPatient = async (args) => {
     let patientId = args.patientId;
@@ -66,6 +67,7 @@ const deletePatients = async () => {
         console.log(`deletePatients: err`);
     }
 }
+
 
 
 module.exports = {

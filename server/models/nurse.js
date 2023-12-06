@@ -1,5 +1,5 @@
 /**
- * Author: Jason Tse
+ * @author: Jason Tse
  */
 
 const mongoose = require('mongoose');
