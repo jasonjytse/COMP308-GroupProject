@@ -1,5 +1,5 @@
 /**
- * Author: Jason Tse
+ * @author: Jason Tse
  */
 
 const mongoose = require('mongoose');
@@ -31,7 +31,11 @@ const patientSchema = new mongoose.Schema({
         default: '',
         required: true,
         trim: true,
-    }
+    },
+    vitals: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Vitals'
+    }]
 });
 
 patientSchema.pre('save', async function () {
