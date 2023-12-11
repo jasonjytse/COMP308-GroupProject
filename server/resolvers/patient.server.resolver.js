@@ -68,8 +68,6 @@ const deletePatients = async () => {
     }
 }
 
-
-
 module.exports = {
     getPatient,
     getPatients,
