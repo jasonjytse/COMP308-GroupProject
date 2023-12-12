@@ -1,24 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
 import React from 'react';
-import RegistrationForm from './components/RegistrationForm';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Home from './components/Home';
 import Login from './components/LoginForm';
-
+import RegistrationForm from './components/RegistrationForm';
 
 function App() {
   return (
-    <div className="App">
-      {/* Other components and content */}
-      <RegistrationForm />
-    </div>
+    <Router>
+      <div className="App">
+        {/* Navigation Header */}
+        {/* You can add a navigation header here if needed */}
+        
+        {/* Routing */}
+        <Switch>
+          {/* Home Page */}
+          <Route exact path="/" component={Home} />
+          
+          {/* Login Page */}
+          <Route path="/login" component={Login} />
+
+          {/* Registration Page */}
+          <Route path="/register" component={RegistrationForm} />
+          
+          {/* Add more routes as needed */}
+          
+          {/* Default Route (404 Page) */}
+          <Route render={() => <div>404 Page Not Found</div>} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
 export default App;
 
-// function App() {
+
 //   const [count, setCount] = useState(0)
 
 //   return (

@@ -4,27 +4,34 @@ import Button from 'react-bootstrap/Button';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
-// GraphQL mutation for user login
-const LOGIN_USER = gql`
-    mutation LoginUser($username: String!, $password: String!) {
-        loginUser(username: $username, password: $password) {
-            username
-            role
-            id
-        }
-    }
-`;
+// import login css that in turn imports the bootstrap css
+import './Login.css';
 
-// GraphQL query for checking if the user is logged in
-const LOGGED_IN_USER = gql`
-    query IsLoggedIn {
-        isLoggedIn {
-            username
-            role
-            id
-        }
-    }
-`;
+import View from './View'
+
+
+
+// // GraphQL mutation for user login
+// const LOGIN_USER = gql`
+//     mutation LoginUser($username: String!, $password: String!) {
+//         loginUser(username: $username, password: $password) {
+//             username
+//             role
+//             id
+//         }
+//     }
+// `;
+
+// // GraphQL query for checking if the user is logged in
+// const LOGGED_IN_USER = gql`
+//     query IsLoggedIn {
+//         isLoggedIn {
+//             username
+//             role
+//             id
+//         }
+//     }
+// `;
 
 function Login() {
     let navigate = useNavigate();
@@ -37,21 +44,21 @@ function Login() {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-      
+
         try {
-          const { data } = await loginUser({
-            variables: { username, password }
-          });
-      
-          // Update userRole based on data.loginUser.role
-          setUserRole(data.loginUser.role);
-      
-          // Other code...
+            const { data } = await loginUser({
+                variables: { username, password }
+            });
+
+            setScreen(data.loginUser.username);
+            setUsername('');
+            setPassword('');
+            setRole(data.loginUser.role);
+            setId(data.loginUser.id);
         } catch (error) {
-          console.error('Login error:', error);
+            console.error('Login error:', error);
         }
-      };
-      
+    };
 
     const { data: isLoggedInData, loading: isLoggedInLoading, error: isLoggedInError } = useQuery(LOGGED_IN_USER);
 

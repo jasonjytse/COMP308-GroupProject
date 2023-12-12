@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-function RegistrationForm({ userRole }) {
+function RegistrationForm() {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
-    role: userRole, // Set the role based on the prop
+    role: 'patient', // Default role
   });
 
   const handleChange = (e) => {
@@ -15,17 +15,17 @@ function RegistrationForm({ userRole }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     // Perform client-side validation here (e.g., checking for empty fields, valid email format, etc.)
-
+    
     // Send registration data to the GraphQL API for registration
     try {
-      // const response = await fetch('', {
+      // const response = await fetch('YOUR_GRAPHQL_API_ENDPOINT', {
       //   method: 'POST',
       //   headers: {
       //     'Content-Type': 'application/json',
       //   },
-      //   body: JSON.stringify(formData),
+      //   body: JSON.stringify(registrationData),
       // });
 
       if (response.ok) {
@@ -77,20 +77,18 @@ function RegistrationForm({ userRole }) {
             required
           />
         </div>
-        {/* Conditionally render role specific input fields */}
-        {userRole === 'nurse' && (
-          <div>
-            <label htmlFor="nurseField">Nurse-specific Field:</label>
-            <input
-              type="text"
-              id="nurseField"
-              name="nurseField"
-              value={formData.nurseField}
-              onChange={handleChange}
-              required
-            />
-          </div>
-        )}
+        <div>
+          <label htmlFor="role">Role:</label>
+          <select
+            id="role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+          >
+            <option value="nurse">Nurse</option>
+            <option value="patient">Patient</option>
+          </select>
+        </div>
         <button type="submit">Register</button>
       </form>
     </div>
