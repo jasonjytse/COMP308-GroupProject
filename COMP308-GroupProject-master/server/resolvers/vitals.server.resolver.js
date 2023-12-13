@@ -20,6 +20,8 @@ const getPatientVitalsEnteredByNurse  = async (args) => {
 }
 
 const createVitals = async (args) => {
+    let vitals = args.vitals;
+
 
 }
 
