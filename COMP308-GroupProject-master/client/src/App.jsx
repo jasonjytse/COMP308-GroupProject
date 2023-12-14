@@ -7,24 +7,43 @@ import Registration from './components/Registration';
 function App() {
   return (
     <Router>
+      <Navbar bg="primary" variant="dark" expand="lg">
+        <Container>
+          <Navbar.Brand as={Link} to="/home">
+            Patient Repository
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link as={Link} to="/home">
+                Home
+              </Nav.Link>
+              <Nav.Link as={Link} to="/login">
+                Login
+              </Nav.Link>
+              <Nav.Link as={Link} to="/signup">
+                Signup
+              </Nav.Link>
+              <Nav.Link as={Link} to="/vitals">
+                Enter Vitals
+              </Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
       <div className="App">
         {/* Navigation Header */}
         {/* You can add a navigation header here if needed */}
-        <Switch>
-          {/* Home Page */}
-          <Route exact path="/" component={Home} />
-          
-          {/* Login Page */}
-          <Route path="/login" component={Login} />
+        <Routes>
+          <Route exact path="/" component={<Home />} />
 
-          {/* Registration Page */}
-          <Route path="/register" component={Registration} />
-          
-          {/* Add more routes as needed */}
-          
-          {/* Default Route (404 Page) */}
+          <Route path="/login" component={<Login />} />
+
+          <Route path="/signup" component={<Registration />} />
+
           <Route render={() => <div>404 Page Not Found</div>} />
-        </Switch>
+        </Routes>
       </div>
     </Router>
   );
