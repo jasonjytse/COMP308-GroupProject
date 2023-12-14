@@ -22,7 +22,14 @@ const getPatientVitalsEnteredByNurse  = async (args) => {
 const createVitals = async (args) => {
     let vitals = args.vitals;
 
+    let newVitals = new Vitals({
+        patientId: vitals.patientId,
+        vitalDataEnteredBy: vitals.vitalDataEnteredBy,
+        vitalData: vitals.vitalData,
+        date: vitals.date
+    });
 
+    return vitals.save();
 }
 
 const updateVitals = async (args) => {
@@ -30,6 +37,8 @@ const updateVitals = async (args) => {
 }
 
 const deleteVitals = async (args) => {
+    let patientId = args.patientId;
+
 
 }
 
