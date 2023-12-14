@@ -5,7 +5,7 @@ import { gql, useQuery, useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-dom';
 
 // import login css that in turn imports the bootstrap css
-import './Login.css';
+import './login.css';
 
 import View from './View'
 
