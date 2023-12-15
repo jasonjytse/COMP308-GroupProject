@@ -6,7 +6,6 @@
 const Nurse = require('../models/nurse');
 const bcrypt = require('bcrypt');
 const config = require('../config/config');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = config.secretKey;
 const JWT_EXPIRY = config.jwtExpirySeconds;
