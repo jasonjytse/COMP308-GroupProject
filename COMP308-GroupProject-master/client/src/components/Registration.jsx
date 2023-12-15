@@ -1,57 +1,108 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import '../App.css';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import { gql, useMutation } from '@apollo/client';
 
-import Home from './components/Home';
-import Login from './components/Login';
-import RegistrationForm from './components/Registration';
-import Nurse from './components/Nurse';
-import Patient from './components/Patient';
+// Define your GraphQL mutations here, matching the schema
+const REGISTER_NURSE = gql`
+  mutation RegisterNurse($nurseId: String!, $password: String!, $firstName: String!, $lastName: String!) {
+    addNurse(nurseId: $nurseId, password: $password, firstName: $firstName, lastName: $lastName) {
+      nurseId
+      firstName
+      lastName
+    }
+  }
+`;
 
-function App() {
-  const [screen, setScreen] = useState('auth'); // Initialize screen state with 'auth'
+const REGISTER_PATIENT = gql`
+  mutation RegisterPatient($patientId: String!, $password: String!, $firstName: String!, $lastName: String!) {
+    addPatient(patientId: $patientId, password: $password, firstName: $firstName, lastName: $lastName) {
+      patientId
+      firstName
+      lastName
+    }
+  }
+`;
+
+function Registration() {
+  const [registrationType, setRegistrationType] = useState('nurse'); // Default to nurse registration
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+
+  const [registerNurse] = useMutation(REGISTER_NURSE);
+  const [registerPatient] = useMutation(REGISTER_PATIENT);
+
+  const handleRegistration = async (e) => {
+    e.preventDefault();
+    const variables = { nurseId: username, password, firstName, lastName };
+    const action = registrationType === 'nurse' ? registerNurse : registerPatient;
+
+    try {
+      const { data } = await action({ variables });
+      console.log(`${registrationType} registration successful:`, data);
+      // Redirect or show success message
+    } catch (error) {
+      console.error(`${registrationType} registration error:`, error);
+      // Show error message
+    }
+  };
+
 
   return (
-    <Router>
-      <Navbar bg="primary" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand href="/home">Health Monitor</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="/login">Login</Nav.Link>
-              <Nav.Link href="/signup">Signup</Nav.Link>
-              {/* Add other navigation links here */}
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-
-      <div className="App">
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/home" component={Home} />
-          <Route path="/login">
-            {screen === 'auth' ? (
-              <Login setScreen={setScreen} />
-            ) : (
-              <Redirect to={`/${screen}`} />
-            )}
-          </Route>
-          <Route path="/signup" component={RegistrationForm} />
-          <Route path="/nurse" component={Nurse} />
-          <Route path="/patient" component={Patient} />
-          <Route path="*">
-            <div>404 Page Not Found</div>
-          </Route>
-        </Switch>
-      </div>
-    </Router>
+    <div>
+      <h2>Registration</h2>
+      <Form onSubmit={handleRegistration}>
+        <Form.Group>
+          <Form.Label>Registration Type:</Form.Label>
+          <Form.Control as="select" onChange={(e) => setRegistrationType(e.target.value)}>
+            <option value="nurse">Nurse</option>
+            <option value="patient">Patient</option>
+          </Form.Control>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Username:</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Password:</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>First Name:</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter first name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Last Name:</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter last name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </Form.Group>
+        <Button variant="primary" type="submit">
+          Register
+        </Button>
+      </Form>
+    </div>
   );
 }
 
-export default App;
+export default Registration;
