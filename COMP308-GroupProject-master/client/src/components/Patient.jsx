@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
+import { useMutation, gql } from '@apollo/client';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { gql, useMutation } from '@apollo/client';
+
+const REGISTER_PATIENT = gql`
+  mutation RegisterPatient($patientId: String!, $password: String!, $firstName: String!, $lastName: String!) {
+    addPatient(patientId: $patientId, password: $password, firstName: $firstName, lastName: $lastName) {
+      patientId
+      firstName
+      lastName
+    }
+  }
+`;
 
 function Patient() {
   const [username, setUsername] = useState('');
@@ -9,17 +19,7 @@ function Patient() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
 
-  const REGISTER_PATIENT = gql`
-    mutation RegisterPatient($patientId: String!, $password: String!, $firstName: String!, $lastName: String!) {
-      addPatient(patientId: $patientId, password: $password, firstName: $firstName, lastName: $lastName) {
-        patientId
-        firstName
-        lastName
-      }
-    }
-  `;
-
-  const [registerPatient] = useMutation(REGISTER_PATIENT);
+  const [registerPatient, { data, loading, error }] = useMutation(REGISTER_PATIENT);
 
   const handleRegistration = async (e) => {
     e.preventDefault();
@@ -32,12 +32,9 @@ function Patient() {
           lastName,
         },
       });
-      // Handle patient registration success
-      console.log('Patient registration successful:', data);
-      // You can redirect the user to a different page or show a success message here
-    } catch (error) {
-      console.error('Patient registration error:', error);
-      // Handle patient registration error, show an error message to the user
+      // Handle patient registration success or error
+    } catch (err) {
+      // Handle error
     }
   };
 
@@ -52,6 +49,7 @@ function Patient() {
             placeholder="Enter username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
           />
         </Form.Group>
         <Form.Group>
@@ -61,6 +59,7 @@ function Patient() {
             placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </Form.Group>
         <Form.Group>
@@ -70,6 +69,7 @@ function Patient() {
             placeholder="Enter first name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
+            required
           />
         </Form.Group>
         <Form.Group>
@@ -79,12 +79,16 @@ function Patient() {
             placeholder="Enter last name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
+            required
           />
         </Form.Group>
         <Button variant="primary" type="submit">
           Register
         </Button>
       </Form>
+      {loading && <p>Registering...</p>}
+      {error && <p>Error: {error.message}</p>}
+      {data && <p>Registration Successful</p>}
     </div>
   );
 }
