@@ -24,6 +24,7 @@ const REGISTER_PATIENT = gql`
   }
 `;
 
+
 function Registration() {
   const [registrationType, setRegistrationType] = useState('nurse'); // Default to nurse registration
   const [username, setUsername] = useState('');
@@ -36,9 +37,12 @@ function Registration() {
 
   const handleRegistration = async (e) => {
     e.preventDefault();
-    const variables = { nurseId: username, password, firstName, lastName };
+    const variables = registrationType === 'nurse' 
+      ? { nurseId: username, password, firstName, lastName } 
+      : { patientId: username, password, firstName, lastName };
+  
     const action = registrationType === 'nurse' ? registerNurse : registerPatient;
-
+  
     try {
       const { data } = await action({ variables });
       console.log(`${registrationType} registration successful:`, data);
@@ -48,7 +52,7 @@ function Registration() {
       // Show error message
     }
   };
-
+  
 
   return (
     <div>
