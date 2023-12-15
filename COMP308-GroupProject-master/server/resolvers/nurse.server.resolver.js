@@ -3,7 +3,7 @@
  * @author: Jason Tse
  */
 
-const Nurse = require('../models/nurse.server.model');
+const Nurse = require('../models/nurse');
 
 const getNurse = async (args) => {
     let nurseId = args.nurseId;

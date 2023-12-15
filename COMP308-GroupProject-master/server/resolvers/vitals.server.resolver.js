@@ -2,7 +2,7 @@
  * @author: Jason Tse
  */
 
-const Vitals = require('../models/vitals.server.model');
+const Vitals = require('../models/vitals.js');
 
 const getPatientVitals = async (args) => {
     let patientId = args.patientId;
@@ -20,26 +20,28 @@ const getPatientVitalsEnteredByNurse  = async (args) => {
 }
 
 const createVitals = async (args) => {
-    let vitals = args.vitals;
-
-    let newVitals = new Vitals({
-        patientId: vitals.patientId,
-        vitalDataEnteredBy: vitals.vitalDataEnteredBy,
-        vitalData: vitals.vitalData,
-        date: vitals.date
-    });
+    let vitals = args
 
     return vitals.save();
 }
 
 const updateVitals = async (args) => {
+    let vitals = args.vitals;
 
+    let oldVitals = Vitals.find({ patientId: vitals.patientId, date: vitals.date });
+    if (!oldVitals) {
+        return "Vitals do not exist";
+    }
+
+    let newVitals = {...oldVitals, ...args };
+    Vitals.findOneAndUpdate({ patientId: vitals.patientId, date: vitals.date }, newVitals, { new: true });
 }
 
 const deleteVitals = async (args) => {
     let patientId = args.patientId;
+    let date = args.date;
 
-
+    await Vitals.deleteMany({ patientId: patientId, date: date });
 }
 
 const deleteOneVital = async (args) => {

@@ -1,7 +1,7 @@
 /**
  * @author: Jason Tse
  */
-import mongoose from 'mongoose';
+const  mongoose = require('mongoose');
 const vitalType = mongoose.Schema({
     vitalEntryId: {
         type: String,
@@ -14,10 +14,10 @@ const vitalType = mongoose.Schema({
         default: '',
         required: true,
         trim: true,
-        enum: {
-            values: ['temperature', 'heart rate', 'blood pressure', 'respiratory rate'],
-            message: '{VALUE} is not a valid vital type'
-        }
+        // enum: {
+        //     values: ['temperature', 'heart rate', 'blood pressure', 'respiratory rate'],
+        //     message: '{VALUE} is not a valid vital type'
+        // }
     },
     vitalDataEntry: {
         type: String,
