@@ -16,6 +16,7 @@ const config = require('./config/config');
 const masterSchema = require('./schemas/master.server.schema');
 const JWT_SECRET = config.JWT_SECRET; // your secret key
 const jwtExpirySeconds = config.jwtExpirySeconds;
+const nursePatientVitalSchema = require('./schemas/master.server.schema');
 
 // Create a new Mongoose connection instance
 const db = configureMongoose();
