@@ -27,7 +27,7 @@ const { getPatientVitals,
     updateVitals,
     deleteVitals,
     deleteOneVital} = require('../resolvers/vitals.server.resolver');
-const { GraphQLID } = require('graphql');
+
 
 
 const nurseType = new GraphQLObjectType({
@@ -249,7 +249,9 @@ const mutationType = new GraphQLObjectType({
         deletePatient: {
             type: patientType,
             args: {
-                patientId: { type: GraphQLString }
+                patientId: {
+                    name: patientId,
+                    type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: async (parent, args) => {
                 return await deletePatient(args);
@@ -264,12 +266,30 @@ const mutationType = new GraphQLObjectType({
         addVital: {
             type: vitalsType,
             args: {
-                vitalEntryId: { type: GraphQLString },
-                vitalEntryType: { type: GraphQLString },
-                vitalDataEntry: { type: GraphQLString },
-                vitalDataEntryDate: { type: GraphQLString },
-                patientRef: { type: GraphQLString },
-                nurseRef: { type: GraphQLString }
+                vitalEntryId: {
+                    name: vitalEntryId,
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                vitalEntryType: {
+                    name: vitalEntryType,
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                vitalDataEntry: {
+                    name: vitalDataEntry,
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                vitalDataEntryDate: {
+                    name: vitalEntryId,
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                patientRef: {
+                    name: vitalEntryId,
+                    type: new GraphQLNonNull(GraphQLString)
+                },
+                nurseRef: {
+                    name: vitalEntryId,
+                    type: new GraphQLNonNull(GraphQLString)
+                }
             },
             resolve: async (args) => {
                 return await createVitals(args)
