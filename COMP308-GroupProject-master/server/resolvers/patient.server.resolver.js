@@ -2,8 +2,13 @@
  * @author: Jason Tse
  */
 
-const Patient = require('../models/patient.server.model');
-const Vitals = require('../models/vitals.server.model');
+const Patient = require('../models/patient.js');
+const bcrypt = require('bcrypt');
+const config = require('../config/config');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = config.secretKey;
+const JWT_EXPIRY = config.jwtExpirySeconds;
 
 const getPatient = async (args) => {
     let patientId = args.patientId;
@@ -17,7 +22,7 @@ const getPatients = async() => {
 const addPatient = async (args) => {
     try {
         let patientId = args.patientId;
-        const result = Patient.findOne({ patientId: patientId });
+        const result = await Patient.findOne({ patientId: patientId });
         if (result) {
             return "Patient already exists";
         }
@@ -34,13 +39,13 @@ const addPatient = async (args) => {
 const updatePatient = async (args) => {
     let patientId = args.patientId;
     try {
-        let oldPatient = Patient.find({ patientId: patientId });
+        let oldPatient = await Patient.find({ patientId: patientId });
         if (!oldPatient) {
             return "Patient does not exist";
         }
 
         let newPatient = {...oldPatient, ...args };
-        Patient.findOneAndUpdate({ patientId: patientId }, newPatient, { new: true });
+        await Patient.findOneAndUpdate({ patientId: patientId }, newPatient, { new: true });
     } catch (err) {
         console.log(`updatePatient: err`);
     }
@@ -49,7 +54,7 @@ const updatePatient = async (args) => {
 const deletePatient = async (args) => {
     let patientId = args.patientId;
     try {
-        let Patient = Patient.find({ patientId: patientId });
+        let Patient = await Patient.find({ patientId: patientId });
         if (!Patient) {
             return "Patient does not exist";
         }
@@ -62,10 +67,40 @@ const deletePatient = async (args) => {
 
 const deletePatients = async () => {
     try {
-        Patient.deleteMany({});
+        await Patient.deleteMany({});
     } catch (err) {
         console.log(`deletePatients: err`);
     }
+}
+const patientLogin = async () => {
+    try {
+        await Patient.findOne({ patientId: patientId }, (err, patient) => {
+            if (err) {
+                console.log(err);
+                return err;
+            }
+            if (!patient) {
+                console.log(`Patient not found`);
+                return `Patient not found`;
+            }
+
+            const validPassword = bcrypt.compare(args.password, patient.password);
+            if (!validPassword) {
+                console.log(`Incorrect password`);
+                return `Incorrect password`;
+            } else {
+                const token = jwt.sign({_id: patient._id, patientId: patient.patientId}, JWT_SECRET, {algorithm: 'HS256', expiresIn: JWT_EXPIRY});
+                context.res.cookie('token', token, { httpOnly: true, maxAge: JWT_EXPIRY });
+                console.log(`Patient logged in`);
+            }
+        });
+    } catch (err) {
+        console.log(`patientLogin: err`);
+    }
+}
+const patientLogout = async (parent, args, context) => {
+    context.res.clearCookie('token');
+    return "Logged out";
 }
 
 module.exports = {
@@ -74,5 +109,7 @@ module.exports = {
     addPatient,
     updatePatient,
     deletePatient,
-    deletePatients
+    deletePatients,
+    patientLogin,
+    patientLogout
 }

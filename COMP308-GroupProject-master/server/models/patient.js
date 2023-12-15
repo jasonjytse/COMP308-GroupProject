@@ -3,7 +3,7 @@
  */
 
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcrypt');
 
 const patientSchema = new mongoose.Schema({
     patientId: {

@@ -13,7 +13,7 @@ const bodyParser = require('body-parser');
 const jwt = require("jsonwebtoken");
 
 const config = require('./config/config');
-// const mergedSchema = require('./schemas/merged.server.schema.js');
+const masterSchema = require('./schemas/master.server.schema');
 const JWT_SECRET = config.JWT_SECRET; // your secret key
 const jwtExpirySeconds = config.jwtExpirySeconds;
 
@@ -49,7 +49,7 @@ app.use(
   '/graphql',
   graphqlHTTP((request, response) => {
     return {
-      schema: mergedSchema,
+      schema: nursePatientVitalSchema,
       rootValue: global,
       graphiql: true,
       context: {
