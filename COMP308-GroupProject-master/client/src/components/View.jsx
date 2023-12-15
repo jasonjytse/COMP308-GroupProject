@@ -1,12 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Typography } from '@mui/material';
-import 'bootstrap/dist/css/bootstrap.min.css'; 
+import { useNavigate } from 'react-router-dom';
 
 function View({ screen, role, id, setScreen, setRole }) {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
     // Implement the logout logic here, which should clear user authentication state
     // and navigate the user to the login page or home page.
+    
+    // Example of clearing user data and navigating to the login page:
+    setScreen('auth');
+    setRole('auth');
+    navigate('/login');
   };
 
   return (

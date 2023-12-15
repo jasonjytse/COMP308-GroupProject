@@ -1,98 +1,57 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import Navbar from 'react-bootstrap/Navbar';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import '../App.css';
 
-function RegistrationForm() {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    role: 'patient', // Default role
-  });
+import Home from './components/Home';
+import Login from './components/Login';
+import RegistrationForm from './components/Registration';
+import Nurse from './components/Nurse';
+import Patient from './components/Patient';
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Perform client-side validation here (e.g., checking for empty fields, valid email format, etc.)
-    
-    // Send registration data to the GraphQL API for registration
-    try {
-      // const response = await fetch('YOUR_GRAPHQL_API_ENDPOINT', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(registrationData),
-      // });
-
-      if (response.ok) {
-        // Registration successful, display success message or redirect to login page
-        console.log('Registration successful');
-      } else {
-        // Registration failed, display error message
-        console.error('Registration failed');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
+function App() {
+  const [screen, setScreen] = useState('auth'); // Initialize screen state with 'auth'
 
   return (
-    <div>
-      <h2>Registration</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="role">Role:</label>
-          <select
-            id="role"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-          >
-            <option value="nurse">Nurse</option>
-            <option value="patient">Patient</option>
-          </select>
-        </div>
-        <button type="submit">Register</button>
-      </form>
-    </div>
+    <Router>
+      <Navbar bg="primary" variant="dark" expand="lg">
+        <Container>
+          <Navbar.Brand href="/home">Health Monitor</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link href="/home">Home</Nav.Link>
+              <Nav.Link href="/login">Login</Nav.Link>
+              <Nav.Link href="/signup">Signup</Nav.Link>
+              {/* Add other navigation links here */}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+
+      <div className="App">
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/home" component={Home} />
+          <Route path="/login">
+            {screen === 'auth' ? (
+              <Login setScreen={setScreen} />
+            ) : (
+              <Redirect to={`/${screen}`} />
+            )}
+          </Route>
+          <Route path="/signup" component={RegistrationForm} />
+          <Route path="/nurse" component={Nurse} />
+          <Route path="/patient" component={Patient} />
+          <Route path="*">
+            <div>404 Page Not Found</div>
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
-export default RegistrationForm;
+export default App;
