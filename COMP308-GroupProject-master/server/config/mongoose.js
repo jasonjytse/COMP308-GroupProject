@@ -14,11 +14,5 @@ module.exports = function() {
 		console.log('Error in db connection', err);
 		});
 
-	// Load the 'Course' model
-	// require('../models/course.server.model')
-	// Load the 'Student' model
-	// require('../models/student.server.model');
-
-	// Return the Mongoose connection instance
 	return db;
 };

@@ -3,13 +3,13 @@
  */
 const  mongoose = require('mongoose');
 const vitalType = mongoose.Schema({
-    vitalEntryId: {
+    vitalId: {
         type: String,
         unique: true,
         required: true,
         trim: true
     },
-    vitalEntryType: {
+    vitalType: {
         type: String,
         default: '',
         required: true,
@@ -19,16 +19,19 @@ const vitalType = mongoose.Schema({
         //     message: '{VALUE} is not a valid vital type'
         // }
     },
-    vitalDataEntry: {
+    vitalEntry: {
         type: String,
         default: '',
         required: true,
         trim: true
     },
-    vitalDataEntryDate: {
+    vitalDate: {
         type: Date,
         default: Date.now,
         required: true
+    },
+    vitalEnteredBy: {
+        type: String,
     },
     patientRef: {
         type: mongoose.Schema.Types.ObjectId,

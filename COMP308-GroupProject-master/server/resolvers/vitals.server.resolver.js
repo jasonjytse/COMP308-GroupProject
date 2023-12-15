@@ -3,6 +3,8 @@
  */
 
 const Vitals = require('../models/vitals.js');
+const Patient = require('../models/patient.js');
+const Nurse = require('../models/nurse.js');
 
 const getPatientVitals = async (args) => {
     let patientId = args.patientId;
@@ -11,18 +13,30 @@ const getPatientVitals = async (args) => {
 
 const getPatientVitalsEnteredByPatient = async (args) => {
     let patientId = args.patientId;
+    patiendMongoId = await Patient.findOne({ patientId: patientId });
     return await Vitals.find({ patientId: patientId, vitalDataEnteredBy: "patient" });
 }
 
 const getPatientVitalsEnteredByNurse  = async (args) => {
     let patientId = args.patientId;
-    return await Vitals.find({ patientId: patientId, vitalDataEnteredBy: "nurse" });
+    let nurseId = args.nurseId;
+
+    let nurseMongoId = await Nurse.findOne({ nurseId: nurseId });
+    return await Vitals.find({ patientId: patientId, nurseRef: nurseMongoId._id });
 }
 
 const createVitals = async (args) => {
-    let vitals = args
+    let vitals = args.vitals;
+    let patientVitals = new Vitals({vitals});
 
-    return vitals.save();
+    if (vitals.vitalDataEnteredBy == "patient") {
+        let patient = await Patient.findOne({ patientId: vitals.patientId });
+        patientVitals.patientRef = patient._id;
+    } else {
+        let nurse = await Nurse.findOne({ nurseId: vitals.nurseId });
+        patientVitals.nurseRef = nurse._id;
+    }
+    return patientVitals.save();
 }
 
 const updateVitals = async (args) => {
@@ -39,13 +53,12 @@ const updateVitals = async (args) => {
 
 const deleteVitals = async (args) => {
     let patientId = args.patientId;
-    let date = args.date;
-
-    await Vitals.deleteMany({ patientId: patientId, date: date });
+    await Vitals.deleteMany({ patientId: patientId });
 }
 
 const deleteOneVital = async (args) => {
-
+    let vitalId = args.vitalId;
+    await Vitals.deleteOne({ vitalId: vitalId });
 }
 
 module.exports = {
