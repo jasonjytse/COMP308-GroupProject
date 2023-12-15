@@ -3,7 +3,7 @@
  */
 
 
-const { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLID } = require('graphql');
+const { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLList, GraphQLID, GraphQLNonNull } = require('graphql');
 
 const { getNurse,
     getNurses,
@@ -69,7 +69,7 @@ const queryType = new GraphQLObjectType({
             type: nurseType,
             args: {
                 nurseId: {
-                    name: nurseId,
+                    name: 'nurseId',
                     type: new GraphQLNonNull(GraphQLString)
                 }
             },
@@ -87,7 +87,7 @@ const queryType = new GraphQLObjectType({
             type: patientType,
             args: {
                 patientId: {
-                    name: patientId,
+                    name: 'patientId',
                     type: new GraphQLNonNull(GraphQLString)}
             },
             resolve: async (patientId) => {
@@ -104,7 +104,7 @@ const queryType = new GraphQLObjectType({
             type: vitalsType,
             args: {
                 vitalEntryId: {
-                    name:vitalEntryId,
+                    name: 'vitalEntryId',
                     type: new GraphQLNonNull(GraphQLString)
                 }
             },
@@ -122,7 +122,7 @@ const queryType = new GraphQLObjectType({
             type: new GraphQLList(vitalsType),
             args: {
                 patientRef: {
-                    name: vitalsEnteredByPatient,
+                    name: 'vitalsEnteredByPatient',
                     type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: async (patientRef) => {
@@ -132,7 +132,7 @@ const queryType = new GraphQLObjectType({
         vitalsEnteredByNurse: {
             type: new GraphQLList(vitalsType),
             args: {
-                nurseRef: { name: nurseRef,
+                nurseRef: { name: 'nurseRef',
                             type: new GraphQLNonNull(GraphQLString)
                 }
             },
@@ -150,18 +150,19 @@ const mutationType = new GraphQLObjectType({
             type: nurseType,
             args: {
                 nurseId: {
-                    name: nurseId,
+                    name: 'nurseId',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 password: {
-                    name: password,
+                    name: 'password',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 firstName: {
-                    name: firstName,
+                    name: 'firstName',
                     type: new GraphQLNonNull(GraphQLString)
                 },
-                lastName: { name: lastName,
+                lastName: {
+                    name: 'lastName',
                     type: new GraphQLNonNull(GraphQLString)
                 }
             },
@@ -173,16 +174,16 @@ const mutationType = new GraphQLObjectType({
             type: nurseType,
             args: {
                 nurseId: {
-                    name: nurseId,
+                    name: 'nurseId',
                     type: new GraphQLNonNull(GraphQLString) },
                 password: {
-                    name: password,
+                    name: 'password',
                     type: new GraphQLNonNull(GraphQLString) },
                 firstName: {
-                    name: firstName,
+                    name: 'firstName',
                     type: new GraphQLNonNull(GraphQLString) },
                 lastName: {
-                    name: lastName,
+                    name: 'lastName',
                     type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: async (args) => {
@@ -193,7 +194,7 @@ const mutationType = new GraphQLObjectType({
             type: nurseType,
             args: {
                 nurseId: {
-                    name: nurseId,
+                    name: 'nurseId',
                     type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: async (parent, args) => {
@@ -210,16 +211,16 @@ const mutationType = new GraphQLObjectType({
             type: patientType,
             args: {
                 patientId: {
-                    name: patientId,
+                    name: 'patientId',
                     type: new GraphQLNonNull(GraphQLString) },
                 password: {
-                    name: password,
+                    name: 'password',
                     type: new GraphQLNonNull(GraphQLString) },
                 firstName: {
-                    name: firstName,
+                    name: 'firstName',
                     type: new GraphQLNonNull(GraphQLString) },
                 lastName: {
-                    name: lastName,
+                    name: 'lastName',
                     type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: async (args) => {
@@ -230,16 +231,16 @@ const mutationType = new GraphQLObjectType({
             type: patientType,
             args: {
                 patientId: {
-                    name: patientId,
+                    name: 'patientId',
                     type: new GraphQLNonNull(GraphQLString) },
                 password: {
-                    name: password,
+                    name: 'password',
                     type: new GraphQLNonNull(GraphQLString) },
                 firstName: {
-                    name: firstName,
+                    name: 'firstName',
                     type: new GraphQLNonNull(GraphQLString) },
                 lastName: {
-                    name: lastName,
+                    name: 'lastName',
                     type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: async (args) => {
@@ -250,7 +251,7 @@ const mutationType = new GraphQLObjectType({
             type: patientType,
             args: {
                 patientId: {
-                    name: patientId,
+                    name: 'patientId',
                     type: new GraphQLNonNull(GraphQLString) }
             },
             resolve: async (parent, args) => {
@@ -267,27 +268,27 @@ const mutationType = new GraphQLObjectType({
             type: vitalsType,
             args: {
                 vitalEntryId: {
-                    name: vitalEntryId,
+                    name: 'vitalEntryId',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 vitalEntryType: {
-                    name: vitalEntryType,
+                    name: 'vitalEntryType',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 vitalDataEntry: {
-                    name: vitalDataEntry,
+                    name: 'vitalDataEntry',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 vitalDataEntryDate: {
-                    name: vitalEntryId,
+                    name: 'vitalEntryId',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 patientRef: {
-                    name: vitalEntryId,
+                    name: 'vitalEntryId',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 nurseRef: {
-                    name: vitalEntryId,
+                    name: 'vitalEntryId',
                     type: new GraphQLNonNull(GraphQLString)
                 }
             },
@@ -298,12 +299,30 @@ const mutationType = new GraphQLObjectType({
         updateVital: {
             type: vitalsType,
             args: {
-                vitalEntryId: { type: GraphQLString },
-                vitalEntryType: { type: GraphQLString },
-                vitalDataEntry: { type: GraphQLString },
-                vitalDataEntryDate: { type: GraphQLString },
-                patientRef: { type: GraphQLString },
-                nurseRef: { type: GraphQLString }
+                vitalEntryId: {
+                    name: 'vitalEntryId',
+                    type: GraphQLString
+                },
+                vitalEntryType: {
+                    name: 'vitalEntryType',
+                    type: GraphQLString
+                },
+                vitalDataEntry: {
+                    name: 'vitalDatEntry',
+                    type: GraphQLString
+                },
+                vitalDataEntryDate: {
+                    name: 'vitalDataEntryDate',
+                    type: GraphQLString
+                },
+                patientRef: {
+                    name: 'patientRef',
+                    type: GraphQLID
+                },
+                nurseRef: {
+                    name: 'nurseRef',
+                    type: GraphQLID
+                }
             },
             resolve: async (args) => {
                 return await updateVitals(args)
