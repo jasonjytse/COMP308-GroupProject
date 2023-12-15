@@ -1,98 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { gql, useMutation } from '@apollo/client';
+import { useNavigate } from 'react-router-dom';
 
-// Define the LOGIN_NURSE mutation
-const LOGIN_NURSE = gql`
-  mutation LoginNurse($nurseId: String!, $password: String!) {
-    nurseLogin(nurseId: $nurseId, password: $password) {
-      nurseId
-      firstName
-      lastName
-    }
-  }
-`;
 
-// Define the LOGIN_PATIENT mutation
-const LOGIN_PATIENT = gql`
-  mutation LoginPatient($patientId: String!, $password: String!) {
-    patientLogin(patientId: $patientId, password: $password) {
-      patientId
-      firstName
-      lastName
+
+import View from './View'
+
+// GraphQL mutation for user login
+const LOGIN_USER = gql`
+    mutation LoginUser($username: String!, $password: String!) {
+        loginUser(username: $username, password: $password) {
+            username
+            role
+            id
+        }
     }
-  }
 `;
 
 function Login() {
-  const [loginType, setLoginType] = useState('nurse'); // Default to nurse login
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+    let navigate = useNavigate();
+    const [loginUser, { data, loading, error }] = useMutation(LOGIN_USER);
+    const [screen, setScreen] = useState('auth');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState();
+    const [id, setId] = useState();
 
-  const [loginNurse, { loading: loadingNurse, error: errorNurse }] = useMutation(LOGIN_NURSE);
-  const [loginPatient, { loading: loadingPatient, error: errorPatient }] = useMutation(LOGIN_PATIENT);
+    const handleLogin = async (event) => {
+        event.preventDefault();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const response = loginType === 'nurse' 
-        ? await loginNurse({ variables: { nurseId: username, password } }) 
-        : await loginPatient({ variables: { patientId: username, password } });
+        try {
+            const { data } = await loginUser({
+                variables: { username, password }
+            });
 
-      console.log(`${loginType} login successful:`, response.data);
-      // Redirect or show success message
-    } catch (error) {
-      console.error(`${loginType} login error:`, error);
-      // Show error message
-    }
-  };
+            setScreen(data.loginUser.username);
+            setUsername('');
+            setPassword('');
+            setRole(data.loginUser.role);
+            setId(data.loginUser.id);
+        } catch (error) {
+            console.error('Login error:', error);
+        }
+    };
 
-  return (
-    <div>
-      <h2>Login</h2>
-      <Form onSubmit={handleLogin}>
-        {/* Login Type Selector */}
-        <Form.Group>
-          <Form.Label>Login Type:</Form.Label>
-          <Form.Control as="select" value={loginType} onChange={(e) => setLoginType(e.target.value)}>
-            <option value="nurse">Nurse</option>
-            <option value="patient">Patient</option>
-          </Form.Control>
-        </Form.Group>
+    useEffect(() => {
+        const checkLoginStatus = async () => {
+            try {
+                // Replace this with your actual logic to check if the user is logged in
+                if (data) {
+                    setScreen(data.loginUser.username);
+                    setRole(data.loginUser.role);
+                    setId(data.loginUser.id);
+                }
+            } catch (e) {
+                setScreen('auth');
+                setRole('auth');
+                setId('auth');
+                console.log('error: ', e);
+            }
+        };
 
-        {/* Username Field */}
-        <Form.Group>
-          <Form.Label>Username:</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="Enter username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </Form.Group>
+        // You can use the checkLoginStatus function to check if the user is logged in.
+        // Replace this logic with your actual authentication flow.
+        checkLoginStatus();
+    }, [data]);
 
-        {/* Password Field */}
-        <Form.Group>
-          <Form.Label>Password:</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
+    return (
+        <div className="entryform">
+            {screen !== 'auth' ? (
+                <View screen={screen} setScreen={setScreen} role={role} setRole={setRole} id={id} />
+            ) : (
+                <Form onSubmit={handleLogin}>
+                    <Form.Group>
+                        <Form.Label>Username:</Form.Label>
+                        <Form.Control id="username" type="text" onChange={(event) => setUsername(event.target.value)} placeholder="Username" />
+                    </Form.Group>
 
-        <Button variant="primary" type="submit" disabled={loadingNurse || loadingPatient}>
-          Login
-        </Button>
+                    <Form.Group>
+                        <Form.Label>Password:</Form.Label>
+                        <Form.Control id="password" type="password" onChange={(event) => setPassword(event.target.value)} placeholder="Password" />
+                    </Form.Group>
 
-        {/* Display errors if they occur */}
-        {errorNurse && <p>Error in nurse login: {errorNurse.message}</p>}
-        {errorPatient && <p>Error in patient login: {errorPatient.message}</p>}
-      </Form>
-    </div>
-  );
+                    <Button size="lg" variant="primary" type="submit">
+                        Login
+                    </Button>
+                </Form>
+            )}
+        </div>
+    );
 }
 
 export default Login;

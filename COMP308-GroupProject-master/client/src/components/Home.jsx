@@ -1,18 +1,25 @@
-import React, { Component }  from 'react';
+import React from 'react';
+import '../css/Home.css';
 
-// this is the home page component
-function Home(props)
-{
-
-    return (
-        <div>
-            <h2> Express - React with CRUD Operations</h2>
-            <p>React front-end calls Express REST API to add, 
-            list, update, or delete a user, create an course, etc.</p>
+function Home(props) {
+  return (
+    <div className="container mt-5">
+      <div className="row">
+        <div className="col-md-8 offset-md-2">
+          <h1 className="text-center mb-4">Health Monitoring System</h1>
+          <div className="card border-primary">
+            <div className="card-body">
+              <h4 className="card-title">Welcome to Health Monitor</h4>
+              <p className="card-text">
+                Monitor your health and vital signs with ease. Keep track of your daily activities and stay fit.
+              </p>
+              <a href="/dashboard" className="btn btn-primary">Go to Dashboard</a>
+            </div>
+          </div>
         </div>
-    );
-
+      </div>
+    </div>
+  );
 }
-// withRouter will pass updated match, location, and history props 
-// to the wrapped component whenever it renders.
+
 export default Home;

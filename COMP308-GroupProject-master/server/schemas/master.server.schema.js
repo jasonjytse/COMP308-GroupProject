@@ -1,27 +1,6 @@
 /**
  * @Author: ebtisam
  */
-import { gql } from '@apollo/client';
-
-const REGISTER_NURSE = gql`
-  mutation RegisterNurse($nurseId: String!, $password: String!, $firstName: String!, $lastName: String!) {
-    addNurse(nurseId: $nurseId, password: $password, firstName: $firstName, lastName: $lastName) {
-      nurseId
-      firstName
-      lastName
-    }
-  }
-`;
-
-const REGISTER_PATIENT = gql`
-  mutation RegisterPatient($patientId: String!, $password: String!, $firstName: String!, $lastName: String!) {
-    addPatient(patientId: $patientId, password: $password, firstName: $firstName, lastName: $lastName) {
-      patientId
-      firstName
-      lastName
-    }
-  }
-`;
 
 
 
