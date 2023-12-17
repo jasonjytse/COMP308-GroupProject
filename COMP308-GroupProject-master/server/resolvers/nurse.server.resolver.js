@@ -19,14 +19,15 @@ const getNurses = async() => {
     return await Nurse.find({});
 }
 
-const addNurse = async (args) => {
+const addNurse = async (parent, args) => {
     try {
+        console.log(args.nurseId);
         let nurseId = args.nurseId;
+
         const result = await Nurse.findOne({ nurseId: nurseId });
         if (result) {
             return "Nurse already exists";
         }
-
         const nurse = new Nurse(args);
         await nurse.save();
         return nurse;

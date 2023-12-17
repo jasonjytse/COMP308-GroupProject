@@ -158,25 +158,19 @@ const mutationType = new GraphQLObjectType({
             type: nurseType,
             args: {
                 nurseId: {
-                    name: 'nurseId',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 password: {
-                    name: 'password',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 firstName: {
-                    name: 'firstName',
                     type: new GraphQLNonNull(GraphQLString)
                 },
                 lastName: {
-                    name: 'lastName',
                     type: new GraphQLNonNull(GraphQLString)
                 }
             },
-            resolve: async (args) => {
-                return await addNurse(args)
-            }
+            resolve: addNurse
         },
         updateNurse: {
             type: nurseType,
